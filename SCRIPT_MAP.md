@@ -84,8 +84,11 @@ it is listed as an input of the nine scripts that read it.
   `mdr_threshold_figure.png/.pdf`
 
 ### 10_replication_check.R
-* **Purpose**: Reproduces the headline aggregate AUC of 0.978 and measures the cost of
-  swapping the species-proxy outcome for AST-confirmed resistance (chain A, first two steps).
+* **Purpose**: Re-builds the hospital-wide aggregate model in its own protocol (starting value
+  0.987) and measures the cost of swapping the species-proxy outcome for AST-confirmed
+  resistance (chain A, first two steps). This is not a re-fit of `05_model_aggregate_level.R`:
+  the design matrix differs (20 columns against 24) and so does the 70/30 partition; see
+  README section 6.
 * **In**: `data/2025Q4-2026Q2_microbial_date.xlsx`, the three quarterly consumption files,
   `ATC_DDD_reference.csv`
 * **Out**: `output/ml/replication_check.csv`, `replication_predictions.rds`

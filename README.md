@@ -24,7 +24,7 @@ scripts/
   07_comparison_figure.R            Figure 3: patient-level vs. aggregate-level comparison
   08_sensitivity_outcome_swap.R     Analysis 1 sensitivity: species-proxy outcome -> AST-confirmed resistance
   09_sensitivity_mdr_threshold.R    Analysis 2 sensitivity: MDR thresholds >=3, >=4, >=5 resistant classes
-  10_replication_check.R            Reproduce AUC 0.978 and quantify the outcome-swap cost
+  10_replication_check.R            Re-build the aggregate model (start 0.987); outcome-swap cost
   11_controlled_ablation.R          Controlled ablation ladder (single-factor substitutions)
   12_paired_delta_test.R            Paired inference on adjacent ablation steps sharing one split
   13_ablation_figure.R              Figure 4: the three prediction chains
@@ -246,6 +246,28 @@ and all eight frozen reference tables (`replication_check`, `controlled_ablation
 `paired_delta_tests`, `sens_spec_summary`, `subgroup_roc`, `mdr_threshold_sensitivity`,
 `baseline_characteristics`, `lasso_coefficients`) reproduce **cell-for-cell**. The
 independent-cohort scripts (`18`–`21`) were not modified in those rounds and were not re-run.
+
+A **fourth round of changes** corrected three statements that described `10` as delivering the
+Analysis 1 result. No executable line changed and no number in the manuscript is affected: the
+script's own output is unchanged, and every percentage in the manuscript is read against the
+span of the chain that starts in `10`. The corrected entries are:
+
+* `10`: the header comment, the contents list above and the entry in `SCRIPT_MAP.md` stated
+  that this script reproduces the Analysis 1 AUC of 0.978 and that its pipeline and feature
+  construction follow `05` exactly. Neither holds. The design matrix is built with
+  `model.matrix(~ . - 1, ...)`, which leaves the categoricals after the first factor coded
+  against a reference level, and is then filtered on variance, so 20 columns enter the model
+  against 24 in `05`. The two hospital-wide totals are constant across events and are among
+  the columns dropped by that filter; the reference level of specimen type and of season is
+  absorbed rather than given a column of its own. The 70/30 partition differs as well:
+  `createDataPartition` receives an integer outcome vector here and a factor in `05`, and on
+  the same 1,023 events with the same seed the two calls return different test sets. The
+  starting value of this script is 0.987, not 0.978; the 95% intervals of the two values
+  overlap, so the difference is a comparison of two configurations on the same events rather
+  than a performance gap.
+
+Verification of this round: stripping the comments and folding the string literals leaves the
+21 scripts line-for-line identical to the copies that produced the reported results.
 
 The whole 21-script pipeline was then executed twice in a pristine empty directory, once
 per phase; all 21 scripts exit 0. The Phase B values are those quoted in section 5.2.

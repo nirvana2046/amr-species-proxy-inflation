@@ -1,10 +1,10 @@
 # Replication check of the aggregate-level analysis.
-# Reproduces the hospital-wide aggregate analysis and separately measures the cost
-# of replacing the species-proxy outcome with an AST-confirmed one. The pipeline
-# and feature construction follow 05_model_aggregate_level.R exactly; only the
-# modelling step is re-run, so any difference is attributable to the outcome
-# definition rather than to an implementation change. is_high_risk (species label)
-# and MDR / any-resistance (AST-confirmed) are evaluated separately.
+# Re-builds the hospital-wide aggregate model in its own protocol (start AUC 0.987) and
+# measures the cost of swapping the species-proxy outcome for an AST-confirmed one.
+# Events, seed and 70/30 protocol match 05_model_aggregate_level.R; the design matrix
+# does not: zero-variance columns are dropped here and the categoricals after the first
+# are coded against a reference level, so 20 columns enter the model against 24, and the
+# split differs. is_high_risk and MDR / any-resistance are evaluated separately.
 
 suppressMessages({
   library(tidyverse)
